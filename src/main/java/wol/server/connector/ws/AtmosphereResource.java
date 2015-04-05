@@ -1,7 +1,7 @@
 package wol.server.connector.ws;
 
-import static org.atmosphere.cpr.ApplicationConfig.MAX_INACTIVE;
-import static org.atmosphere.cpr.ApplicationConfig.DROP_ACCESS_CONTROL_ALLOW_ORIGIN_HEADER;
+//import static org.atmosphere.cpr.ApplicationConfig.MAX_INACTIVE;
+//import static org.atmosphere.cpr.ApplicationConfig.DROP_ACCESS_CONTROL_ALLOW_ORIGIN_HEADER;
 
 import java.io.IOException;
 
@@ -14,9 +14,12 @@ import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.atmosphere.interceptor.CorsInterceptor;
 import org.slf4j.LoggerFactory;
 
+//import wol.connector.rest.JacksonDecoder;
+//import wol.connector.rest.JacksonEncoder;
+
 //,interceptors={CorsInterceptor.class}
 //,"org.atmosphere.cpr.ApplicationConfig.dropAccessControlAllowOriginHeader=true"
-@ManagedService (path="/atmosphere/atm",atmosphereConfig = {MAX_INACTIVE+ "=120000"})
+//@ManagedService (path="/atmosphere/atm",atmosphereConfig = {MAX_INACTIVE+ "=120000"})
 public class AtmosphereResource {
 	private final org.slf4j.Logger logger = LoggerFactory.getLogger(AtmosphereResource.class);
 	
@@ -41,7 +44,7 @@ public class AtmosphereResource {
 		//AtmosphereResponse.newInstance().getWriter();
 	}
 	
-   @org.atmosphere.config.service.Message(encoders = {JacksonEncoder.class}, decoders = {JacksonDecoder.class})
+  // @org.atmosphere.config.service.Message(encoders = {JacksonEncoder.class}, decoders = {JacksonDecoder.class})
     public String onMessage(AtmosphereResource r,String message) throws IOException {
         logger.info("{} just send {}");
         return message;

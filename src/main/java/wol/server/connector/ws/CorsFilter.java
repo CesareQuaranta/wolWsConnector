@@ -14,13 +14,13 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebFilter(filterName = "CorsFilter",
+/*@WebFilter(filterName = "CorsFilter",
 urlPatterns = {"/*"},
 dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD,DispatcherType.ASYNC,DispatcherType.INCLUDE},
 //servletNames = {"AtmosphereServlet"},
 asyncSupported = true,
 initParams = {
-    @WebInitParam(name = "mood", value = "awake")})
+    @WebInitParam(name = "mood", value = "awake")})*/
 public class CorsFilter implements Filter{
 	 private FilterConfig config = null;
 	 
