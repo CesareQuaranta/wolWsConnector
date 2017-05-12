@@ -1,6 +1,9 @@
-package wol.server.connector.ws;
+package edu.wol.server.connector.ws.draft;
 
-import java.io.IOException;
+/*
+ * Filro sperimentale per risolvere problematiche crossdomain
+ 
+ import java.io.IOException;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
@@ -12,7 +15,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;*/
 
 /*@WebFilter(filterName = "CorsFilter",
 urlPatterns = {"/*"},
@@ -21,8 +24,8 @@ dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD,DispatcherType
 asyncSupported = true,
 initParams = {
     @WebInitParam(name = "mood", value = "awake")})*/
-public class CorsFilter implements Filter{
-	 private FilterConfig config = null;
+public class CorsFilter {//implements Filter
+	 /*private FilterConfig config = null;
 	 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
@@ -59,5 +62,5 @@ public class CorsFilter implements Filter{
     		 config.getServletContext().log("Initializing CORS Filter for develop purpose");
     	}
        
-    }   
+    }   */
 } 

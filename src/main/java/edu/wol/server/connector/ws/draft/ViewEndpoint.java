@@ -1,24 +1,24 @@
-package wol.server.connector.ws;
+package edu.wol.server.connector.ws.draft;
 
 import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.websocket.OnClose;
+/*import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
+import javax.websocket.server.ServerEndpoint;*/
 
-@ServerEndpoint("/ws/view")
+//@ServerEndpoint("/ws/view")
 public class ViewEndpoint {
-	static Queue<Session> queue = new ConcurrentLinkedQueue<>();
+	//static Queue<Session> queue = new ConcurrentLinkedQueue<>();
 	
 	public ViewEndpoint() {
 		// TODO Auto-generated constructor stub
 	}
-	
+	/*
 	 @OnOpen
 	   public void open(Session session) {
 	      session.getUserProperties().put("previousMsg", " ");
@@ -52,5 +52,5 @@ public class ViewEndpoint {
 	    public void onClose(Session session) {
 		 System.out.printf("Close connection for client: {0}", 
 	                session.getId());
-	    }
+	    }*/
 }
