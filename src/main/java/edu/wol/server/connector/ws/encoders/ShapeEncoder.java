@@ -9,9 +9,9 @@ import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 
 import edu.wol.dom.shape.PlanetShape;
-import edu.wol.dom.shape.iShape;
+import edu.wol.dom.shape.Shape;
 
-public class ShapeEncoder implements Encoder.Text< iShape >{
+public class ShapeEncoder implements Encoder.Text< Shape >{
 
 	@Override
 	public void init(EndpointConfig config) {
@@ -26,7 +26,7 @@ public class ShapeEncoder implements Encoder.Text< iShape >{
 	}
 
 	@Override
-	public String encode(iShape shape) throws EncodeException {
+	public String encode(Shape shape) throws EncodeException {
 		JsonObjectBuilder jbuilder = Json.createObjectBuilder();
 		if(shape instanceof PlanetShape){
 			PlanetShape p = (PlanetShape) shape;
