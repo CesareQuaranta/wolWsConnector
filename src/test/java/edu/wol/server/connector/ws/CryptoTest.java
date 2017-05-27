@@ -91,7 +91,17 @@ public class CryptoTest {
 	    byte[] clearbyte = dcipher.doFinal(Base64.decodeBase64(token));
 	    String decodedToken = new String(clearbyte);
 		Assert.assertTrue("Decodifica fallita", decodedToken.startsWith("cesare.quaranta@gmail.com"));
-		System.out.println("Check Decodifica Token <"+decodedToken+"> OK");
+		System.out.println("Check Decodifica AES <"+decodedToken+"> OK");
+	}
+	@Test
+	public void testDecodificaToken() throws Exception{
+		String token="DuyniivSfVj6vEddcxRTIp1ddZmBDBjIcEV0LlX3ao3J/XuYkTuwX/8DfZFGfzPXpG5grn4TP/91Gj3HUpHzie52WlUV5bj6q2NAdx2n04sJrcJy1SUwEa28DhlRqaQSSX6RhwCVNIFozYQmgOUcohnguf58CMrUoiezRkJnHTxIU69sUvTMKZcSeWpI2QsS9c9gZPUZOhcJ2TFvsKWqi2GVacd5538vIcSKcHxqeoJrcuVe2+l5s5Pk+pz88KFS5G4VhEhv7rt75tvCT6x5Yvu2BRebcpOy5coX//Y171Xn9MZZbE7xoj3rPENREs3bKCBYV8yCaogxATiEllOcBw==";
+		System.out.println("Test decodifica Token");
+		System.out.println(token);
+		String decodedToken=decoder.decode(token);
+		System.out.println("Decoded:"+decodedToken);
+		Assert.assertTrue("Decodifica fallita", decodedToken.startsWith("cesare.quaranta@gmail.com"));
+		System.out.println("Check Decodifica Token OK");
 	}
 	private String codifica(String msg) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException{
 		 File f = new File("src/test/resources/public.key");

@@ -58,7 +58,7 @@ public class RSADecoder implements InitializingBean{
         byte[] decoded = Base64.decodeBase64(privKeyPEM);//Base64.decodeBase64(encodedPrivateKey.getBytes())
         
 		privateKey = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decoded));
-		decoder = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+		decoder = Cipher.getInstance("RSA");//, "BC");
 		decoder.init(Cipher.DECRYPT_MODE, privateKey);
 	}
 }

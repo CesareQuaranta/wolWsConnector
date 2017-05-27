@@ -22,9 +22,7 @@ import edu.wol.server.connector.ws.SessionStartMessage;
  * Date 27/mag/2017
  * @Author Cesare Quaranta
  * Scopo di questa classe è la validazione del primo messaggio di una conversazione, attraverso l'acquisizione e verifica di un token criptato
- * Inizialmente era stata tentata la strtada di utilizzare il meccasnismo di cifratuta a chiavi asincrone RSA ma date le difficoltà di decriptazione 
- * si è adottato l'approccio di una criptazione con password AES
- * Rimane comunque a disposizione il component tokenDecoder se in futuro si riusciranno a risolvere i suddetti problemi.
+ * attraverso l'algoritmo asyncrono RSA
  */
 public class StartMessageDecoder implements Decoder.Text<SessionStartMessage>{
 	public static String PREFIX = "xToken:";
@@ -48,15 +46,7 @@ public class StartMessageDecoder implements Decoder.Text<SessionStartMessage>{
 		String token=s.substring(PREFIX.length());
 		m.setToken(token);
 		try {
-			byte[] keyb = "somepassword".getBytes("UTF-8");
-		    MessageDigest md = MessageDigest.getInstance("MD5");
-		    byte[] thedigest = md.digest(keyb);
-		    SecretKeySpec skey = new SecretKeySpec(thedigest, "AES");
-		    Cipher dcipher = Cipher.getInstance("AES");
-		    dcipher.init(Cipher.DECRYPT_MODE, skey);
-		    byte[] clearbyte = dcipher.doFinal(Base64.decodeBase64(token));
-		    String decoded = new String(clearbyte);
-			//String decoded = tokenDecoder.decode(token);
+			String decoded = tokenDecoder.decode(token);
 			logger.debug(decoded);
 			String[] decodedArray =decoded.split("|");
 			if(decodedArray.length!=3){
@@ -66,9 +56,9 @@ public class StartMessageDecoder implements Decoder.Text<SessionStartMessage>{
 			if(System.currentTimeMillis()-tokenDate>30000){
 				throw new Exception("Token Expired");
 			}
-			//TODO Check username
+			//TODO Check formato username
 			m.setUsername(decodedArray[0]);
-			//TODO Check ip
+			//TODO Check formato ip e coerenza provenienza
 			m.setIp(decodedArray[1]);
 		} catch (Exception e) {
 			String errorMessage="Errore di decodifica Token";
