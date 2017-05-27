@@ -3,7 +3,7 @@ package edu.wol.server.connector.ws;
 public class SessionStartMessage {
 	private String token;
 	private String ip;
-	private String quadrante;
+	private String username;
 	
 	public String getToken() {
 		return token;
@@ -17,10 +17,10 @@ public class SessionStartMessage {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
-	public String getQuadrante() {
-		return quadrante;
+	public String getUsername() {
+		return username;
 	}
-	public void setQuadrante(String quadrante) {
-		this.quadrante = quadrante;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }
