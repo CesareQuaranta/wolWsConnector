@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.websocket.CloseReason;
+import javax.websocket.DecodeException;
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -37,7 +39,10 @@ public class WebSocketEndpoint {
 	public void onOpen( final Session session ) {
 		logger.info("ws connection opened: " + session.getId());
 		sessions.add( session );
-		session.addMessageHandler(new StartSessionHandler(session));
+		if(session.getMessageHandlers().isEmpty()){
+			session.addMessageHandler(new StartSessionHandler(session));
+			logger.debug("New StartSessionHandler associate to Session " + session.getId());
+		}
 	}
 
 
@@ -48,7 +53,11 @@ public class WebSocketEndpoint {
 	sessions.remove( session );
 	logger.info("ws connection closed: " + session.getId());
 	}
-	/*
+	
+	@OnMessage
+	public void onMessage( final SessionStartMessage msg, final Session session ) throws IOException, EncodeException {
+		logger.info("User "+msg.getUsername()+" logged " + session.getId());
+	}/*  More than one method is annotated with interface javax.websocket.OnMessage
 	@OnMessage
 	public void onMessage( final Command cmd, final Session client ) throws IOException, EncodeException {
 		client.getBasicRemote().sendObject( "Ok moto" );
@@ -58,5 +67,17 @@ public class WebSocketEndpoint {
     public void onWebSocketError(Session session,Throwable cause)
     {
 		logger.error("ws connection exception: " + session.getId(),cause);
+		try {
+		if(cause instanceof DecodeException){
+			
+			if(((DecodeException)cause).getMessage().contains("Could not decode string")){
+				session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY,((DecodeException)cause).getMessage()));	
+			}else if(((DecodeException)cause).getMessage().contains("Errore di decodifica Token")){
+					session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY,((DecodeException)cause).getMessage()));
+			}
+		}
+		} catch (IOException e) {
+			logger.error("Remote io Error",e);
+		}
     }
 }
