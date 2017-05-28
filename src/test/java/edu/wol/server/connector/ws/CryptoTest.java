@@ -37,7 +37,7 @@ public class CryptoTest {
 	  @BeforeClass
 		public static void init() throws Exception {
 		  decoder = new RSADecoder();
-		  decoder.init("src/test/resources/private.key");
+		  decoder.init("classpath:private.key");
 	  }
 	@Test
 	public void testKeyGeneration() throws Exception{
@@ -96,6 +96,8 @@ public class CryptoTest {
 	@Test
 	public void testDecodificaToken() throws Exception{
 		String token="DuyniivSfVj6vEddcxRTIp1ddZmBDBjIcEV0LlX3ao3J/XuYkTuwX/8DfZFGfzPXpG5grn4TP/91Gj3HUpHzie52WlUV5bj6q2NAdx2n04sJrcJy1SUwEa28DhlRqaQSSX6RhwCVNIFozYQmgOUcohnguf58CMrUoiezRkJnHTxIU69sUvTMKZcSeWpI2QsS9c9gZPUZOhcJ2TFvsKWqi2GVacd5538vIcSKcHxqeoJrcuVe2+l5s5Pk+pz88KFS5G4VhEhv7rt75tvCT6x5Yvu2BRebcpOy5coX//Y171Xn9MZZbE7xoj3rPENREs3bKCBYV8yCaogxATiEllOcBw==";
+	//	String token="JHe66PeZB4FoAzAfYQgbKYhiPp/AOyo6U3+DNasd0yNqpVM3RfIPLwWQtKYzhtesTJqCn6qfv2yn8Q4xyp264v2NJZMqzbAh9e02y986Rm8oqcdVcT0fCSt7nqjOHq0j3qIXdYuD1VWn7HikmX15p0wjnLz43sX5g0abdVukGrkyxgxalpoIEdWBDTO3u5oHe8gD0VFHwyn8pBO6598iI2hWy+J3L75MpH4P4PLq8UjmoIjCM5wn3rZwjkAu0AlNwAT/q0sIpgdSb3n60bp4zpfyRxoowiZ2RRqrLVhawBE26j6P4pOZ/ueoTyLMFmhyQyzc20y3n6rvobJt199gDA==";
+		//String token="JHe66PeZB4FoAzAfYQgbKYhiPp/AOyo6U3+DNasd0yNqpVM3RfIPLwWQtKYzhtesTJqCn6qfv2yn8Q4xyp264v2NJZMqzbAh9e02y986Rm8oqcdVcT0fCSt7nqjOHq0j3qIXdYuD1VWn7HikmX15p0wjnLz43sX5g0abdVukGrkyxgxalpoIEdWBDTO3u5oHe8gD0VFHwyn8pBO6598iI2hWy+J3L75MpH4P4PLq8UjmoIjCM5wn3rZwjkAu0AlNwAT/q0sIpgdSb3n60bp4zpfyRxoowiZ2RRqrLVhawBE26j6P4pOZ/ueoTyLMFmhyQyzc20y3n6rvobJt199gDA==";
 		System.out.println("Test decodifica Token");
 		System.out.println(token);
 		String decodedToken=decoder.decode(token);
