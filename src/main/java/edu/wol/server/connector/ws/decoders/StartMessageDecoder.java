@@ -48,7 +48,7 @@ public class StartMessageDecoder implements Decoder.Text<SessionStartMessage>{
 		try {
 			String decoded = tokenDecoder.decode(token);
 			logger.debug(decoded);
-			String[] decodedArray =decoded.split("|");
+			String[] decodedArray =decoded.split("\\|");
 			if(decodedArray.length!=3){
 				throw new Exception("Invalid Token");
 			}
@@ -61,7 +61,7 @@ public class StartMessageDecoder implements Decoder.Text<SessionStartMessage>{
 			//TODO Check formato ip e coerenza provenienza
 			m.setIp(decodedArray[1]);
 		} catch (Exception e) {
-			String errorMessage="Errore di decodifica Token";
+			String errorMessage="Errore di decodifica Token:"+token;
 			logger.error(errorMessage, e);
 			throw new DecodeException(s,errorMessage,e);
 		} 
