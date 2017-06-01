@@ -5,10 +5,12 @@ import java.util.Date;
 public class GenericMessage {
 protected Date time;
 protected String source;
+protected Object payload;
 
 public GenericMessage(String source) {
 	this.source = source;
 	time=new Date();
+	payload=null;
 }
 public Date getTime() {
 	return time;
@@ -21,5 +23,11 @@ public String getSource() {
 }
 public void setSource(String source) {
 	this.source = source;
+}
+public Object getPayload() {
+	return payload;
+}
+public void setPayload(Object payload) {
+	this.payload = payload;
 }
 }

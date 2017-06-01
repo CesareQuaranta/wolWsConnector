@@ -1,13 +1,9 @@
 package edu.wol.server.connector.ws.messages;
 
-public class SessionStartMessage extends GenericMessage{
+public class UserPayload {
 	private String token;
 	private String ip;
 	private String username;
-	
-	public SessionStartMessage(String source) {
-		super(source);
-	}
 	
 	public String getToken() {
 		return token;

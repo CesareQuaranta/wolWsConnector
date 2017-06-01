@@ -1,11 +1,7 @@
 package edu.wol.server.connector.ws;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.CloseReason;
@@ -29,16 +25,16 @@ import edu.wol.dom.services.UserInterface;
 import edu.wol.server.connector.ws.decoders.CommandDecoder;
 import edu.wol.server.connector.ws.decoders.GenericMessageDecoder;
 import edu.wol.server.connector.ws.decoders.StartMessageDecoder;
+import edu.wol.server.connector.ws.encoders.ProspectiveEncoder;
 import edu.wol.server.connector.ws.encoders.ShapeEncoder;
-import edu.wol.server.connector.ws.messages.CommandMessage;
 import edu.wol.server.connector.ws.messages.GenericMessage;
-import edu.wol.server.connector.ws.messages.SessionStartMessage;
+import edu.wol.server.connector.ws.messages.UserPayload;
 
 @ServerEndpoint( 
 value = "/ws", 
 subprotocols  = {"wol/1.0"},
-encoders = { ShapeEncoder.class }, 
-decoders = { StartMessageDecoder.class,CommandDecoder.class,GenericMessageDecoder.class },
+encoders = { ShapeEncoder.class, ProspectiveEncoder.class }, 
+decoders = { GenericMessageDecoder.class},
 configurator = SpringConfigurator.class
 ) 
 public class WebSocketEndpoint {
@@ -68,28 +64,31 @@ public class WebSocketEndpoint {
 	@OnMessage
 	public void onMessage( final GenericMessage msg, final Session session ) throws IOException, EncodeException {
 		if(ui!=null){
-			if(msg instanceof SessionStartMessage){//TODO Da verificare e spostare in SessionStartMessageHandler
-				SessionStartMessage ssm = (SessionStartMessage)msg;
-				User user=ui.loadUser(ssm.getUsername());
-				if(user!=null){
-					sessions.put(session, user);
-					logger.info("User "+ssm.getUsername()+" logged " + session.getId());
-					session.getAsyncRemote().sendObject(user.getProspective());
-					//TODO send all wolEntity
-					//TODO add listener for push change
+			Object msgPayload =msg.getPayload();
+			if(msgPayload!=null){
+				if(msgPayload instanceof UserPayload){//TODO Da verificare e spostare in SessionStartMessageHandler
+					UserPayload ssm = (UserPayload)msgPayload;
+					User user=ui.loadUser(ssm.getUsername());
+					if(user!=null){
+						sessions.put(session, user);
+						logger.info("User "+ssm.getUsername()+" logged " + session.getId());
+						session.getAsyncRemote().sendObject(user.getProspective());
+						//TODO send all wolEntity
+						//TODO add listener for push change
+					}
+					
+				}else if (msgPayload instanceof Command){
+					Command cmd=(Command)msgPayload;
+					User user=sessions.get(session);
+					logger.info("User "+user.getUsername()+" " + session.getId()+" command:"+cmd);
 				}
-				
-			}else if (msg instanceof CommandMessage){
-				CommandMessage cmd=(CommandMessage)msg;
-				User user=sessions.get(session);
-				logger.info("User "+user.getUsername()+" " + session.getId()+" command:"+cmd.getCommand());
 			}
+			
 		}else{
 			logger.warn("No UI Configured message processing disabled");
 		}
 		
 	}
-	
 	
 	@OnError
     public void onWebSocketError(Session session,Throwable cause)

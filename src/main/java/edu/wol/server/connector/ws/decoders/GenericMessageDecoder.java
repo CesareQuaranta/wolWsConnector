@@ -18,9 +18,18 @@ import edu.wol.server.connector.ws.messages.GenericMessage;
 public class GenericMessageDecoder implements Decoder.Text<GenericMessage>{
 	final static Logger logger = LoggerFactory.getLogger(GenericMessageDecoder.class);
 
+	private StartMessageDecoder startDecoder;
+	private CommandDecoder commandDecoder;
+	
 	@Override
 	public void init(EndpointConfig config) {
+		startDecoder = new StartMessageDecoder();
+		RSADecoder tokenDecoder = getApplicationContext().getBean(RSADecoder.class);
+		startDecoder.setTokenDecoder(tokenDecoder);
+		startDecoder.init(config);
 		
+		commandDecoder=new CommandDecoder();
+		commandDecoder.init(config);
 	}
 
 	@Override
@@ -32,6 +41,11 @@ public class GenericMessageDecoder implements Decoder.Text<GenericMessage>{
 	@Override
 	public GenericMessage decode(String s) throws DecodeException {
 		GenericMessage m = new GenericMessage(s);
+		if(startDecoder.willDecode(s)){
+			m.setPayload(startDecoder.decode(s));
+		}else if(commandDecoder.willDecode(s)){
+			m.setPayload(commandDecoder.decode(s));
+		}
 		return m;
 	}
 

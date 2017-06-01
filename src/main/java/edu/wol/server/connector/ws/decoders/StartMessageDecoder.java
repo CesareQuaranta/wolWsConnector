@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.ContextLoader;
 
-import edu.wol.server.connector.ws.messages.SessionStartMessage;
+import edu.wol.server.connector.ws.messages.UserPayload;
 /**
  * 
  * Date 27/mag/2017
@@ -17,14 +17,14 @@ import edu.wol.server.connector.ws.messages.SessionStartMessage;
  * Scopo di questa classe è la validazione del primo messaggio di una conversazione, attraverso l'acquisizione e verifica di un token criptato
  * attraverso l'algoritmo asyncrono RSA
  */
-public class StartMessageDecoder implements Decoder.Text<SessionStartMessage> {
+public class StartMessageDecoder implements Decoder.Text<UserPayload> {
 	public static String PREFIX = "xToken:";
 	final static Logger logger = LoggerFactory.getLogger(StartMessageDecoder.class);
 
 	private RSADecoder tokenDecoder;
 	@Override
 	public void init(EndpointConfig config) {
-		tokenDecoder = getApplicationContext().getBean(RSADecoder.class);
+		
 	}
 
 	@Override
@@ -34,8 +34,8 @@ public class StartMessageDecoder implements Decoder.Text<SessionStartMessage> {
 	}
 
 	@Override
-	public SessionStartMessage decode(String s) throws DecodeException {
-		SessionStartMessage m = new SessionStartMessage(s);
+	public UserPayload decode(String s) throws DecodeException {
+		UserPayload m = new UserPayload();
 		String token=s.substring(PREFIX.length());
 		m.setToken(token);
 		try {
@@ -45,10 +45,10 @@ public class StartMessageDecoder implements Decoder.Text<SessionStartMessage> {
 			if(decodedArray.length!=3){
 				throw new Exception("Invalid Token");
 			}
-			long tokenDate = Long.parseLong(decodedArray[2]);
+			/*long tokenDate = Long.parseLong(decodedArray[2]);
 			if(System.currentTimeMillis()-tokenDate>30000){
 				throw new Exception("Token Expired");
-			}
+			}*/
 			//TODO Check formato username
 			m.setUsername(decodedArray[0]);
 			//TODO Check formato ip e coerenza provenienza
@@ -65,9 +65,9 @@ public class StartMessageDecoder implements Decoder.Text<SessionStartMessage> {
 	public boolean willDecode(String s) {
 		return (s!=null && s.startsWith(PREFIX));
 	}
-	
-	protected ApplicationContext getApplicationContext() {
-		return ContextLoader.getCurrentWebApplicationContext();
+
+	public void setTokenDecoder(RSADecoder tokenDecoder) {
+		this.tokenDecoder = tokenDecoder;
 	}
 
 }
