@@ -3,6 +3,8 @@ package edu.wol.server.connector.ws;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 
+import edu.wol.server.connector.ws.messages.SessionStartMessage;
+
 public class StartSessionHandler implements MessageHandler.Whole<SessionStartMessage>{
 	final Session session;
 	public StartSessionHandler(Session session) {

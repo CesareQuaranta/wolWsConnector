@@ -2,8 +2,11 @@ package edu.wol.server.connector.ws;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.CloseReason;
 import javax.websocket.DecodeException;
@@ -17,28 +20,36 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
 
+import edu.wol.dom.User;
 import edu.wol.dom.commands.Command;
+import edu.wol.dom.services.UserInterface;
 import edu.wol.server.connector.ws.decoders.CommandDecoder;
+import edu.wol.server.connector.ws.decoders.GenericMessageDecoder;
 import edu.wol.server.connector.ws.decoders.StartMessageDecoder;
 import edu.wol.server.connector.ws.encoders.ShapeEncoder;
+import edu.wol.server.connector.ws.messages.CommandMessage;
+import edu.wol.server.connector.ws.messages.GenericMessage;
+import edu.wol.server.connector.ws.messages.SessionStartMessage;
 
 @ServerEndpoint( 
 value = "/ws", 
 subprotocols  = {"wol/1.0"},
 encoders = { ShapeEncoder.class }, 
-decoders = { StartMessageDecoder.class,CommandDecoder.class },
+decoders = { StartMessageDecoder.class,CommandDecoder.class,GenericMessageDecoder.class },
 configurator = SpringConfigurator.class
 ) 
 public class WebSocketEndpoint {
 	final static Logger logger = LoggerFactory.getLogger(WebSocketEndpoint.class);
-	private static final Set< Session > sessions = Collections.synchronizedSet( new HashSet< Session >() ); 
-	
+	private static final Map< Session, User > sessions = new ConcurrentHashMap< Session,User >(); 
+	@Autowired
+	private UserInterface ui;
 	@OnOpen
 	public void onOpen( final Session session ) {
 		logger.info("ws connection opened: " + session.getId());
-		sessions.add( session );
+		sessions.put( session,null );
 		if(session.getMessageHandlers().isEmpty()){
 			session.addMessageHandler(new StartSessionHandler(session));
 			logger.debug("New StartSessionHandler associate to Session " + session.getId());
@@ -55,13 +66,30 @@ public class WebSocketEndpoint {
 	}
 	
 	@OnMessage
-	public void onMessage( final SessionStartMessage msg, final Session session ) throws IOException, EncodeException {
-		logger.info("User "+msg.getUsername()+" logged " + session.getId());
-	}/*  More than one method is annotated with interface javax.websocket.OnMessage
-	@OnMessage
-	public void onMessage( final Command cmd, final Session client ) throws IOException, EncodeException {
-		client.getBasicRemote().sendObject( "Ok moto" );
-	}*/
+	public void onMessage( final GenericMessage msg, final Session session ) throws IOException, EncodeException {
+		if(ui!=null){
+			if(msg instanceof SessionStartMessage){//TODO Da verificare e spostare in SessionStartMessageHandler
+				SessionStartMessage ssm = (SessionStartMessage)msg;
+				User user=ui.loadUser(ssm.getUsername());
+				if(user!=null){
+					sessions.put(session, user);
+					logger.info("User "+ssm.getUsername()+" logged " + session.getId());
+					session.getAsyncRemote().sendObject(user.getProspective());
+					//TODO send all wolEntity
+					//TODO add listener for push change
+				}
+				
+			}else if (msg instanceof CommandMessage){
+				CommandMessage cmd=(CommandMessage)msg;
+				User user=sessions.get(session);
+				logger.info("User "+user.getUsername()+" " + session.getId()+" command:"+cmd.getCommand());
+			}
+		}else{
+			logger.warn("No UI Configured message processing disabled");
+		}
+		
+	}
+	
 	
 	@OnError
     public void onWebSocketError(Session session,Throwable cause)

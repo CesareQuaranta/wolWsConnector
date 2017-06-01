@@ -6,8 +6,9 @@ import javax.websocket.EndpointConfig;
 
 import edu.wol.dom.commands.Command;
 import edu.wol.dom.commands.GravityPower;
+import edu.wol.server.connector.ws.messages.CommandMessage;
 
-public class CommandDecoder implements Decoder.Text<Command>{
+public class CommandDecoder implements Decoder.Text<CommandMessage>{
 
 	@Override
 	public void init(EndpointConfig config) {
@@ -22,9 +23,11 @@ public class CommandDecoder implements Decoder.Text<Command>{
 	}
 
 	@Override
-	public Command decode(String s) throws DecodeException {
+	public CommandMessage decode(String s) throws DecodeException {
 		Command c = new GravityPower();
-		return c;
+		CommandMessage msg = new CommandMessage(s);
+		msg.setCommand(c);
+		return msg;
 	}
 
 	@Override

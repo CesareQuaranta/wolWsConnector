@@ -1,22 +1,15 @@
 package edu.wol.server.connector.ws.decoders;
 
-import java.security.MessageDigest;
-import java.util.Date;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.ContextLoader;
 
-import edu.wol.server.connector.ws.SessionStartMessage;
+import edu.wol.server.connector.ws.messages.SessionStartMessage;
 /**
  * 
  * Date 27/mag/2017
@@ -24,7 +17,7 @@ import edu.wol.server.connector.ws.SessionStartMessage;
  * Scopo di questa classe è la validazione del primo messaggio di una conversazione, attraverso l'acquisizione e verifica di un token criptato
  * attraverso l'algoritmo asyncrono RSA
  */
-public class StartMessageDecoder implements Decoder.Text<SessionStartMessage>{
+public class StartMessageDecoder implements Decoder.Text<SessionStartMessage> {
 	public static String PREFIX = "xToken:";
 	final static Logger logger = LoggerFactory.getLogger(StartMessageDecoder.class);
 
@@ -42,7 +35,7 @@ public class StartMessageDecoder implements Decoder.Text<SessionStartMessage>{
 
 	@Override
 	public SessionStartMessage decode(String s) throws DecodeException {
-		SessionStartMessage m = new SessionStartMessage();
+		SessionStartMessage m = new SessionStartMessage(s);
 		String token=s.substring(PREFIX.length());
 		m.setToken(token);
 		try {
