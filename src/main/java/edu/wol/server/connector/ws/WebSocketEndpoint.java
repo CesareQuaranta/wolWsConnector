@@ -49,7 +49,7 @@ public class WebSocketEndpoint {
 	@OnOpen
 	public void onOpen( final Session session ) {
 		logger.info("ws connection opened: " + session.getId());
-		sessions.put( session,null );
+		//sessions.put( session,null );
 		if(session.getMessageHandlers().isEmpty()){
 			session.addMessageHandler(new StartSessionHandler(session));
 			logger.debug("New StartSessionHandler associate to Session " + session.getId());
