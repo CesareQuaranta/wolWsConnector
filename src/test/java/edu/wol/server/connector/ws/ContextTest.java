@@ -9,10 +9,12 @@ import org.eclipse.jetty.websocket.api.WebSocketBehavior;
 import org.eclipse.jetty.websocket.api.WebSocketPolicy;
 import org.eclipse.jetty.websocket.jsr356.server.AnnotatedServerEndpointConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.context.WebApplicationContext;
@@ -26,6 +28,14 @@ import org.springframework.web.socket.handler.PerConnectionWebSocketHandler;
 import org.springframework.web.socket.server.jetty.JettyRequestUpgradeStrategy;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
+import edu.wol.dom.Prospective;
+import edu.wol.dom.User;
+import edu.wol.dom.commands.Command;
+import edu.wol.dom.services.UserEventListener;
+import edu.wol.dom.services.UserInterface;
+import edu.wol.dom.space.Position;
+import edu.wol.server.connector.ws.decoders.RSADecoder;
+
 import javax.websocket.server.ServerEndpointConfig;
 /**
  * 
@@ -36,12 +46,10 @@ import javax.websocket.server.ServerEndpointConfig;
  */
 @Configuration
 @ComponentScan(basePackages = {"wol.server.connector.ws"})
-@EnableWebSocket
-public class TestContextConfiguration {//implements WebSocketConfigurer{
+@PropertySource("classpath:test.properties")
+public class ContextTest {//implements WebSocketConfigurer{
 	@Autowired
 	private WebApplicationContext context;
-	private ServerContainer container;
-	
 	@Bean
 	public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
@@ -51,7 +59,47 @@ public class TestContextConfiguration {//implements WebSocketConfigurer{
  
         return messageSource;
     }
-	
+	@Bean
+	public UserInterface mockUI(){
+		return new UserInterface(){
+
+			@Override
+			public User loadUser(String username) {
+				Prospective p=new Prospective();
+				User user = new User(username,p);
+				return user;
+			}
+
+			@Override
+			public void moveUser(User user, Position pos) {
+				System.out.println("User "+user.getUsername()+" move to "+pos.toString());
+			}
+
+			@Override
+			public void rotateUser(User user, Position newHorizon) {
+				System.out.println("User "+user.getUsername()+" rotare to "+newHorizon.toString());
+			}
+
+			@Override
+			public void executeUserCommand(User user, Command com) {
+				System.out.println("User "+user.getUsername()+" Execute command: "+com.toString());
+			}
+
+			@Override
+			public void addUserListner(User user, UserEventListener listener) {
+			}
+
+			@Override
+			public void removeUserListner(User user, UserEventListener listener) {
+			}
+			
+		};
+	}
+	@PostConstruct
+	public void init() throws DeploymentException {
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+	}
+	/*
 	public class SpringServerEndpointConfigurator extends ServerEndpointConfig.Configurator {
 		@Override
 		public < T > T getEndpointInstance( Class< T > endpointClass ) 
@@ -70,7 +118,7 @@ public class TestContextConfiguration {//implements WebSocketConfigurer{
 	@PostConstruct
 	public void init() throws DeploymentException {
 		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-	/*container = ( ServerContainer )context.getServletContext().
+	container = ( ServerContainer )context.getServletContext().
 	getAttribute( javax.websocket.server.ServerContainer.class.getName() );
 
 	container.addEndpoint(AnnotatedWebSocketEndpoint.class);*/
@@ -83,7 +131,7 @@ public class TestContextConfiguration {//implements WebSocketConfigurer{
 			public Configurator getConfigurator() {
 			return configurator();
 			}
-		};*/
+		};
 	} 
 	/*
     @Override

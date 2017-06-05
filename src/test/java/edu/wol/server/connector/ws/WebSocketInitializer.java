@@ -31,7 +31,7 @@ public class WebSocketInitializer implements ServletContextListener{
 
 			final ServerContainer serverContainer = (ServerContainer) container.getAttribute(SERVER_CONTAINER_ATTRIBUTE);
 			try {
-				//serverContainer.addEndpoint(new WebSocketEndopointConfig(WebSocketEndpoint.class, WEBSOCKET_ENDPOINT));
+				serverContainer.addEndpoint(new WebSocketEndopointConfig4Test(WebSocketEndpoint.class, WEBSOCKET_ENDPOINT));
 				logger.info("REGISTERED WEBSOCKET ENDPOINT AT "+WEBSOCKET_ENDPOINT);
 				//serverContainer.addEndpoint(new WebSocketEndopointConfig(AnnotatedWebSocketEndpoint.class,"ws2"));
 				

@@ -7,7 +7,7 @@ import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 
-public class TestClientEndpoint extends Endpoint{
+public class ClientEndpoint4Test extends Endpoint{
 	private static final String SENT_MESSAGE = "xToken";
 	private Session session;
 	private TestMessageHandler msgHadler;

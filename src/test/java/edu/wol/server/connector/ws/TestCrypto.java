@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import edu.wol.server.connector.ws.decoders.RSADecoder;
 
-public class CryptoTest {	
+public class TestCrypto {	
 	private static RSADecoder decoder;
 	
 	  @BeforeClass

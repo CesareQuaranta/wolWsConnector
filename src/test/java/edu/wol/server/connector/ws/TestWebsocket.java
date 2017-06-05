@@ -23,24 +23,33 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={TestContextConfiguration.class})
-@WebAppConfiguration
+//@ContextConfiguration(classes={ContextTest.class})
+@ContextConfiguration(classes={ContextTest.class})//loader=AnnotationConfigContextLoader.class,
 //@ContextConfiguration(initializers = {TestAppContextInitializer.class})
-public class WebsocketClientTest {
-	private static Server jettyServer;
-	private CountDownLatch messageLatch;
-    private static final String TEST_CONTEXT = "/websocket-test";
-    private static final int SERVER_PORT = 8080;
-    private static ClientEndpointConfig cec = null;
+@WebAppConfiguration
+public class TestWebsocket {
+	private static final String TEST_CONTEXT = "/websocket-test";
+	private static final int SERVER_PORT = 8181;
+	private static ClientEndpointConfig cec = null;
     private static ClientManager client = null;
     private static ThreadPoolConfig workerThreadPoolConfig = null;
     private static URI TestURI = null;
+    
+	private static Server jettyServer;
+
+	private CountDownLatch messageLatch;
+	@Autowired
+    private static WebApplicationContext wac;
+   
     
     @BeforeClass
 	public static void globalSetup() throws Exception {
@@ -49,6 +58,10 @@ public class WebsocketClientTest {
 		setupWebsocketClient();
 		setupJettyServlet();
 		
+		/*MockServletContext sc = new MockServletContext("");
+        ServletContextListener listener = new ContextLoaderListener(wac);
+        ServletContextEvent event = new ServletContextEvent(sc);
+        listener.contextInitialized(event);*/
 		TestURI = new URI("ws://localhost:"+SERVER_PORT+TEST_CONTEXT+WebSocketInitializer.WEBSOCKET_ENDPOINT);
 		System.out.println("TestURI: "+TestURI);
 
@@ -68,7 +81,7 @@ public class WebsocketClientTest {
 		context.setBaseResource(Resource.newResource(currentDir + "/src/test/resources"));
 		context.setInitParameter("contextConfigLocation", "context.xml");
 		
-		context.addEventListener(new ContextLoaderListener());
+		context.addEventListener(new ContextLoaderListener(wac));
 	
 		jettyServer.setHandler(context);
 		context.addEventListener(new WebSocketInitializer());
@@ -96,24 +109,24 @@ public class WebsocketClientTest {
     
     @Test
 	 public void testConnection() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
-			System.out.println("Test Connection");
+    	System.out.println("Test Connection "+TestURI.toString());
 
 			messageLatch = new CountDownLatch(1);
 			Endpoint endpoint =new MessageLatchTestClientEndpoint(messageLatch);
 			try {
-				//client.connectToServer(endpoint, cec, TestURI);
+				client.connectToServer(endpoint, cec, TestURI);
 			}catch (Exception e) {
 				e.printStackTrace();
 				throw e;
 			}
-		    //boolean mesageReceivedByClient = messageLatch.await(30, TimeUnit.SECONDS);
-		    //Assert.assertTrue("Time lapsed before message was received by client.", mesageReceivedByClient);
+		    boolean mesageReceivedByClient = messageLatch.await(30, TimeUnit.SECONDS);
+		    Assert.assertTrue("Time lapsed before message was received by client.", mesageReceivedByClient);
 	 }
     
     @Test
 	 public void testEndpoint() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
 			System.out.println("Test Endpoint");
-			TestClientEndpoint endpoint =new TestClientEndpoint();
+			ClientEndpoint4Test endpoint =new ClientEndpoint4Test();
 			//openNewSession(endpoint);
 			//endpoint.send("xToken");
 	 }

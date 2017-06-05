@@ -9,5 +9,6 @@
            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd"
 	default-lazy-init="true">
 	
-	<!--  context:component-scan base-package="edu.wol.server.connector.ws"></context:component-scan-->
+	<context:component-scan base-package="edu.wol.server.connector.ws"></context:component-scan>
+	<!--  bean id="tokenDecoder" class="edu.wol.server.connector.ws.decoders.RSADecoder"></bean-->
 </beans>
