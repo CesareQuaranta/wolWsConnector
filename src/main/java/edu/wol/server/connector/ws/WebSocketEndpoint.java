@@ -22,9 +22,7 @@ import org.springframework.web.socket.server.standard.SpringConfigurator;
 import edu.wol.dom.User;
 import edu.wol.dom.commands.Command;
 import edu.wol.dom.services.UserInterface;
-import edu.wol.server.connector.ws.decoders.CommandDecoder;
 import edu.wol.server.connector.ws.decoders.GenericMessageDecoder;
-import edu.wol.server.connector.ws.decoders.StartMessageDecoder;
 import edu.wol.server.connector.ws.encoders.ProspectiveEncoder;
 import edu.wol.server.connector.ws.encoders.ShapeEncoder;
 import edu.wol.server.connector.ws.messages.GenericMessage;
@@ -57,8 +55,10 @@ public class WebSocketEndpoint {
 
 	@OnClose
 	public void onClose( final Session session ) {
-	sessions.remove( session );
-	logger.info("ws connection closed: " + session.getId());
+		if(session!=null){
+			sessions.remove( session );
+			logger.info("ws connection closed: " + session.getId());
+		}
 	}
 	
 	@OnMessage

@@ -43,9 +43,9 @@ public class RSADecoder implements InitializingBean{
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		init(environment.getRequiredProperty(PROPERTY_NAME_PRIVATE_KEY_PATH));
-		
-		
+		if(environment!=null){
+			init(environment.getRequiredProperty(PROPERTY_NAME_PRIVATE_KEY_PATH));
+		}
 	}
 	
 	public void init(String privateKeyPath) throws Exception{
