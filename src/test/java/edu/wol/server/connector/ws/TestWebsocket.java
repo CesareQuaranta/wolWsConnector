@@ -124,10 +124,16 @@ public class TestWebsocket {
 	 }
     
     @Test
-	 public void testEndpoint() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
+	 public void testStartSessionEndpoint() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
 			System.out.println("Test Endpoint");
 			ClientEndpoint4Test endpoint =new ClientEndpoint4Test();
-			//openNewSession(endpoint);
-			//endpoint.send("xToken");
+			openNewSession(endpoint);
+			endpoint.send("xToken:DuyniivSfVj6vEddcxRTIp1ddZmBDBjIcEV0LlX3ao3J/XuYkTuwX/8DfZFGfzPXpG5grn4TP/91Gj3HUpHzie52WlUV5bj6q2NAdx2n04sJrcJy1SUwEa28DhlRqaQSSX6RhwCVNIFozYQmgOUcohnguf58CMrUoiezRkJnHTxIU69sUvTMKZcSeWpI2QsS9c9gZPUZOhcJ2TFvsKWqi2GVacd5538vIcSKcHxqeoJrcuVe2+l5s5Pk+pz88KFS5G4VhEhv7rt75tvCT6x5Yvu2BRebcpOy5coX//Y171Xn9MZZbE7xoj3rPENREs3bKCBYV8yCaogxATiEllOcBw==");
+			if(endpoint.messages.size()==0){
+				synchronized (endpoint.messages){
+					endpoint.messages.wait(3000);
+				}
+			}
+			Assert.assertTrue("Messaggio non ricevuto", endpoint.messages.size()==1);
 	 }
 }
