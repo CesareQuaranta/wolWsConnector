@@ -26,18 +26,19 @@ public class ProspectiveEncoder implements Encoder.Text< Prospective >{
 	@Override
 	public String encode(Prospective prospective) throws EncodeException {
 		JsonObjectBuilder jbuilder = Json.createObjectBuilder();
+		JsonObjectBuilder propertyBuilder=Json.createObjectBuilder();
 		//Conversione in unità di misura pro rendering
 		Position pos=prospective.getPosition();
 		Position horizon = prospective.getHorizon();
-		double maxFar=pos.getDistance(horizon);
-		double relativeFar=maxFar*prospective.getFarRatio();
-		double relativeNear=maxFar*prospective.getNearRatio();
-		prospective.getFarRatio();
-		jbuilder.add("Prospective", 
-				Json.createObjectBuilder().add("fov", prospective.getFov())
-				.add("near",relativeNear )
-				.add("far",relativeFar )
-				);
+		propertyBuilder.add("fov", prospective.getFov());
+		if(pos != null && horizon != null){
+			double maxFar=pos.getDistance(horizon);
+			double relativeFar=maxFar*prospective.getFarRatio();
+			double relativeNear=maxFar*prospective.getNearRatio();
+			propertyBuilder.add("near",relativeNear )
+			.add("far",relativeFar );
+		}
+		jbuilder.add("Prospective", propertyBuilder.build());
 		return jbuilder.build().toString();
 	}
 
