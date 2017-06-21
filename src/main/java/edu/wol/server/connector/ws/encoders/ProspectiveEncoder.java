@@ -10,11 +10,10 @@ import edu.wol.dom.Prospective;
 import edu.wol.dom.space.Position;
 
 public class ProspectiveEncoder implements Encoder.Text< Prospective >{
-
+	PositionEncoder posEncoder;
 	@Override
 	public void init(EndpointConfig config) {
-		// TODO Auto-generated method stub
-		
+		posEncoder=new PositionEncoder();
 	}
 
 	@Override
@@ -27,17 +26,17 @@ public class ProspectiveEncoder implements Encoder.Text< Prospective >{
 	public String encode(Prospective prospective) throws EncodeException {
 		JsonObjectBuilder jbuilder = Json.createObjectBuilder();
 		JsonObjectBuilder propertyBuilder=Json.createObjectBuilder();
-		//Conversione in unità di misura pro rendering
+		//TODO Conversione in unità di misura pro rendering
 		Position pos=prospective.getPosition();
-		Position horizon = prospective.getHorizon();
+		Position focus = prospective.getFocus();
 		propertyBuilder.add("fov", prospective.getFov());
-		if(pos != null && horizon != null){
-			double maxFar=pos.getDistance(horizon);
-			double relativeFar=maxFar*prospective.getFarRatio();
-			double relativeNear=maxFar*prospective.getNearRatio();
-			propertyBuilder.add("near",relativeNear )
-			.add("far",relativeFar );
+		if(pos != null){
+			propertyBuilder.add("position", posEncoder.encode(pos));			
 		}
+		if(focus != null){
+			propertyBuilder.add("focus", posEncoder.encode(focus));	
+		}
+		propertyBuilder.add("near",prospective.getNear() ).add("far",prospective.getFar() );
 		jbuilder.add("Prospective", propertyBuilder.build());
 		return jbuilder.build().toString();
 	}
