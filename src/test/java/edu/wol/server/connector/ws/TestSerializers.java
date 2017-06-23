@@ -29,23 +29,23 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import edu.wol.dom.Prospective;
 import edu.wol.server.connector.ws.decoders.RSADecoder;
+import edu.wol.server.connector.ws.encoders.GsonFactory;
 import edu.wol.server.connector.ws.encoders.ProspectiveEncoder;
 
-public class TestEncodersDecoders {	
+public class TestSerializers {	
 	private static ProspectiveEncoder prEncoder;
 	
-	  @BeforeClass
-		public static void init() throws Exception {
-		  prEncoder = new ProspectiveEncoder();
-		  prEncoder.init(null);
-	  }
+	 
 	@Test
-	public void testProspectiveEncoder() throws Exception{
+	public void testProspectiveSerializer() throws Exception{
 			Prospective p = new Prospective(null);
-			String result=prEncoder.encode(p);
-			
+			Gson gson=GsonFactory.getInstance();
+			String result=gson.toJson(p);
 			System.out.println("Test Prospective Encoder : "+result);
 	}
 	

@@ -65,7 +65,7 @@ public class ContextTest {//implements WebSocketConfigurer{
 
 			@Override
 			public User loadUser(String username) {
-				Prospective p=new Prospective(null);
+				Prospective p=new Prospective();
 				User user = new User(username,p);
 				return user;
 			}

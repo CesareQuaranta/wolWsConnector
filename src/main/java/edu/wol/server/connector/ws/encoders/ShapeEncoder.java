@@ -1,22 +1,19 @@
 package edu.wol.server.connector.ws.encoders;
 
-import java.util.UUID;
-
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
+
+import com.google.gson.Gson;
 
 import edu.wol.dom.shape.PlanetShape;
 import edu.wol.dom.shape.Shape;
 
 public class ShapeEncoder implements Encoder.Text< Shape >{
-
+	private Gson gson;
 	@Override
 	public void init(EndpointConfig config) {
-		// TODO Auto-generated method stub
-		
+		gson=GsonFactory.getInstance();
 	}
 
 	@Override
@@ -27,14 +24,12 @@ public class ShapeEncoder implements Encoder.Text< Shape >{
 
 	@Override
 	public String encode(Shape shape) throws EncodeException {
-		JsonObjectBuilder jbuilder = Json.createObjectBuilder();
 		if(shape instanceof PlanetShape){
-			PlanetShape p = (PlanetShape) shape;
-			jbuilder.add("Planetoid", 
-					Json.createObjectBuilder().add("id", UUID.randomUUID().toString())
-					.add("radius", p.getRadius()));
+			return gson.toJson(shape);
+		}else{
+			return "{unsupported:true}";
 		}
-		return jbuilder.build().toString();
+		
 	}
 
 }
