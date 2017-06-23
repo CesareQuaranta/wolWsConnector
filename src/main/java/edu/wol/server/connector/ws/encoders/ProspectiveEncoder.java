@@ -23,7 +23,7 @@ public class ProspectiveEncoder implements Encoder.Text< Prospective >{
 
 	@Override
 	public String encode(Prospective prospective) throws EncodeException {
-		return "{Prospective:"+gson.toJson(prospective)+"}";
+		return "{\"Prospective\":"+gson.toJson(prospective)+"}";
 	}
 
 }

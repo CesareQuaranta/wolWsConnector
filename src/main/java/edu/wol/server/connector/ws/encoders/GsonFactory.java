@@ -12,6 +12,8 @@ public class GsonFactory {
 	public synchronized static Gson getInstance(){
 		if(instance==null){
 			GsonBuilder builder= new GsonBuilder();
+			builder.enableComplexMapKeySerialization();
+			builder.setPrettyPrinting();//TODO Disable 4 production
 			builder.registerTypeAdapter(Position.class, new PositionSerializer());
 			builder.registerTypeAdapter(Prospective.class, new ProspectiveSerializer());
 			builder.registerTypeAdapter(PlanetShape.class, new PlanetShapeSerializer());
