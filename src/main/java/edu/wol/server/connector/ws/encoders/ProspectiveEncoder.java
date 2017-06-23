@@ -31,7 +31,11 @@ public class ProspectiveEncoder implements Encoder.Text< Prospective >{
 		Position focus = prospective.getFocus();
 		propertyBuilder.add("fov", prospective.getFov());
 		if(pos != null){
-			propertyBuilder.add("position", posEncoder.encode(pos));			
+			JsonObjectBuilder posBuilder = Json.createObjectBuilder();
+			posBuilder.add("x", pos.getX());
+			posBuilder.add("y", pos.getY());
+			posBuilder.add("z", pos.getZ());
+			propertyBuilder.add("position", posBuilder.build());
 		}
 		if(focus != null){
 			propertyBuilder.add("focus", posEncoder.encode(focus));	
