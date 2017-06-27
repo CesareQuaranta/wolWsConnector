@@ -81,6 +81,7 @@ public class WebSocketEndpoint {
 					Command cmd=(Command)msgPayload;
 					User user=sessions.get(session);
 					logger.info("User "+user.getUsername()+" " + session.getId()+" command:"+cmd);
+					ui.executeUserCommand(user, cmd);
 				}
 			}
 			
