@@ -19,7 +19,7 @@ public class GenericMessageDecoder implements Decoder.Text<GenericMessage>{
 	final static Logger logger = LoggerFactory.getLogger(GenericMessageDecoder.class);
 
 	private StartMessageDecoder startDecoder;
-	private CommandDecoder commandDecoder;
+	private CommandMessageDecoder commandDecoder;
 	
 	@Override
 	public void init(EndpointConfig config) {
@@ -28,7 +28,7 @@ public class GenericMessageDecoder implements Decoder.Text<GenericMessage>{
 		startDecoder.setTokenDecoder(tokenDecoder);
 		startDecoder.init(config);
 		
-		commandDecoder=new CommandDecoder();
+		commandDecoder=new CommandMessageDecoder();
 		commandDecoder.init(config);
 	}
 
