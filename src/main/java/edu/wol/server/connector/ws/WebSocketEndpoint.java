@@ -50,7 +50,7 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 	private User curUser=null;
 	private Session curSession=null;
 	@Autowired
-	private UserInterface ui;
+	private UserInterface<?> ui;
 	@OnOpen
 	public void onOpen( final Session session ) {
 		logger.info("ws connection opened: " + session.getId());
@@ -85,23 +85,27 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 							curSession=session;
 							logger.info("User "+ssm.getUsername()+" logged " + session.getId());
 							session.getAsyncRemote().sendObject(user.getProspective());
-							
-							WorldContainer<WolEntity,Position> wol=(WorldContainer<WolEntity,Position>)user.getProspective().getWol();
-							if(wol!=null){//TODO send all wolEntity
-								EntitiesPayload<Planetoid,Position> ep= new EntitiesPayload<Planetoid,Position>();
-								Collection<WolEntity> ce=(Collection<WolEntity>) wol.getSpace().getAllEntities();
-								for(WolEntity e : ce){
-									if(e instanceof Planetoid){
-										Position p=wol.getSpace().getPosition(e);
-										ep.addEntity((Planetoid)e, p);
+							if(user.getProspective().getWolID()!=null){
+								WorldContainer<WolEntity,Position> wol=(WorldContainer<WolEntity,Position>)ui.loadWol(Long.parseLong(user.getProspective().getWolID().split("-")[1]));
+								if(wol!=null){//TODO send all wolEntity
+									EntitiesPayload<Planetoid,Position> ep= new EntitiesPayload<Planetoid,Position>();
+									Collection<WolEntity> ce=(Collection<WolEntity>) wol.getSpace().getAllEntities();
+									for(WolEntity e : ce){
+										if(e instanceof Planetoid){
+											Position p=wol.getSpace().getPosition(e);
+											ep.addEntity((Planetoid)e, p);
+										}
 									}
+									session.getAsyncRemote().sendObject(ep);
+									wol.addEventObserver(this);//TODO add listener for push change
 								}
-								session.getAsyncRemote().sendObject(ep);
-								wol.addEventObserver(this);//TODO add listener for push change
 							}
+							
 							
 						}else{
 							logger.warn("No user found:"+ssm.getUsername());
+							session.getAsyncRemote().sendText("Invalid authentication");
+							session.close();
 						}
 						
 					}else if (msgPayload instanceof Command){

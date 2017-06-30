@@ -30,6 +30,7 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import edu.wol.dom.Prospective;
 import edu.wol.dom.User;
+import edu.wol.dom.WorldContainer;
 import edu.wol.dom.commands.Command;
 import edu.wol.dom.services.UserEventListener;
 import edu.wol.dom.services.UserInterface;
@@ -91,6 +92,12 @@ public class ContextTest {//implements WebSocketConfigurer{
 
 			@Override
 			public void removeUserListner(User user, UserEventListener listener) {
+			}
+
+			@Override
+			public WorldContainer loadWol(long ID) {
+				// TODO Auto-generated method stub
+				return null;
 			}
 			
 		};
