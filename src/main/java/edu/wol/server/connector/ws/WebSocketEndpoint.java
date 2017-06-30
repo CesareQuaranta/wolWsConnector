@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
 
+import edu.wol.dom.Phenomen;
 import edu.wol.dom.User;
 import edu.wol.dom.WolEntity;
-import edu.wol.dom.WorldContainer;
 import edu.wol.dom.iEvent;
 import edu.wol.dom.iEventObserver;
 import edu.wol.dom.commands.Command;
@@ -33,7 +33,6 @@ import edu.wol.dom.space.Position;
 import edu.wol.server.connector.ws.decoders.GenericMessageDecoder;
 import edu.wol.server.connector.ws.encoders.ProspectiveEncoder;
 import edu.wol.server.connector.ws.encoders.ShapeEncoder;
-import edu.wol.server.connector.ws.messages.EntitiesPayload;
 import edu.wol.server.connector.ws.messages.GenericMessage;
 import edu.wol.server.connector.ws.messages.UserPayload;
 
@@ -50,7 +49,7 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 	private User curUser=null;
 	private Session curSession=null;
 	@Autowired
-	private UserInterface<?> ui;
+	private UserInterface<?,Planetoid> ui;
 	@OnOpen
 	public void onOpen( final Session session ) {
 		logger.info("ws connection opened: " + session.getId());
@@ -86,22 +85,11 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 							logger.info("User "+ssm.getUsername()+" logged " + session.getId());
 							session.getAsyncRemote().sendObject(user.getProspective());
 							if(user.getProspective().getWolID()!=null){
-								WorldContainer<WolEntity,Position> wol=(WorldContainer<WolEntity,Position>)ui.loadWol(Long.parseLong(user.getProspective().getWolID().split("-")[1]));
-								if(wol!=null){//TODO send all wolEntity
-									EntitiesPayload<Planetoid,Position> ep= new EntitiesPayload<Planetoid,Position>();
-									Collection<WolEntity> ce=(Collection<WolEntity>) wol.getSpace().getAllEntities();
-									for(WolEntity e : ce){
-										if(e instanceof Planetoid){
-											Position p=wol.getSpace().getPosition(e);
-											ep.addEntity((Planetoid)e, p);
-										}
-									}
-									session.getAsyncRemote().sendObject(ep);
-									wol.addEventObserver(this);//TODO add listener for push change
-								}
+								long wolID=Long.parseLong(user.getProspective().getWolID().split("-")[1]);
+								Collection<Phenomen<Planetoid>> phenomens=ui.getAllPhenomen(wolID);
+									session.getAsyncRemote().sendObject(phenomens);//TODO Utilizzare un sendHandler?
+									//wol.addEventObserver(this);//TODO add listener for push change
 							}
-							
-							
 						}else{
 							logger.warn("No user found:"+ssm.getUsername());
 							session.getAsyncRemote().sendText("Invalid authentication");
@@ -149,10 +137,10 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 	@Override
 	public void processEvent(iEvent event) {
 		if(event instanceof NewPosition){
-			EntitiesPayload<Planetoid,Position> ep = new EntitiesPayload<Planetoid,Position>();
+			//EntitiesPayload<Planetoid,Position> ep = new EntitiesPayload<Planetoid,Position>();
 			NewPosition<Planetoid> np=(NewPosition<Planetoid>)event;
-			ep.addEntity(np.getEntity(), np.getNewPosition());
-			curSession.getAsyncRemote().sendObject(ep);
+			//ep.addEntity(np.getEntity(), np.getNewPosition());
+			curSession.getAsyncRemote().sendObject(np);
 		}
 		
 	}

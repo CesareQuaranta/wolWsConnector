@@ -1,5 +1,8 @@
 package edu.wol.server.connector.ws;
 
+import java.io.IOException;
+import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerContainer;
@@ -95,7 +98,8 @@ public class ContextTest {//implements WebSocketConfigurer{
 			}
 
 			@Override
-			public WorldContainer loadWol(long ID) {
+			public Collection getAllPhenomen(long wolID) throws IOException,
+					Exception {
 				// TODO Auto-generated method stub
 				return null;
 			}

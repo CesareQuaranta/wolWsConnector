@@ -1,24 +1,24 @@
 package edu.wol.server.connector.ws.encoders;
 
 import java.lang.reflect.Type;
-import java.util.Iterator;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import edu.wol.dom.Phenomen;
 import edu.wol.dom.space.Planetoid;
-import edu.wol.dom.space.Position;
-import edu.wol.server.connector.ws.messages.EntitiesPayload;
 
-public class EntitiesPayloadSerializer<E extends EntitiesPayload<Planetoid,Position>> implements JsonSerializer<E> {
+public class PhenomenSerializer<E extends Phenomen<Planetoid>> implements JsonSerializer<E> {
 
 	@Override
 	public JsonElement serialize(E src, Type typeOfSrc,
 			JsonSerializationContext context) {
-		JsonObject jsonPayload=new JsonObject();
+		JsonObject jsonPhenomen= (JsonObject) context.serialize(src.getEntity());
+		jsonPhenomen.add("position", context.serialize(src.getPosition()));
+		return jsonPhenomen;
+		/*JsonObject jsonPayload=new JsonObject();
 		JsonArray jsonEntities=new JsonArray();
 		jsonPayload.add("entities", jsonEntities);
 		Iterator<Planetoid> i=src.iterator();
@@ -31,7 +31,7 @@ public class EntitiesPayloadSerializer<E extends EntitiesPayload<Planetoid,Posit
 			}
 			jsonEntities.add(jsonEntity);	
 		}
-		return jsonPayload;
+		return jsonPayload;*/
 	}
 
 }
