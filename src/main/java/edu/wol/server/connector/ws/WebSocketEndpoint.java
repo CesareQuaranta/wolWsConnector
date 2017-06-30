@@ -1,6 +1,7 @@
 package edu.wol.server.connector.ws;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,11 +21,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
 
 import edu.wol.dom.User;
+import edu.wol.dom.WolEntity;
+import edu.wol.dom.WorldContainer;
+import edu.wol.dom.iEvent;
+import edu.wol.dom.iEventObserver;
 import edu.wol.dom.commands.Command;
 import edu.wol.dom.services.UserInterface;
+import edu.wol.dom.space.NewPosition;
+import edu.wol.dom.space.Planetoid;
+import edu.wol.dom.space.Position;
 import edu.wol.server.connector.ws.decoders.GenericMessageDecoder;
 import edu.wol.server.connector.ws.encoders.ProspectiveEncoder;
 import edu.wol.server.connector.ws.encoders.ShapeEncoder;
+import edu.wol.server.connector.ws.messages.EntitiesPayload;
 import edu.wol.server.connector.ws.messages.GenericMessage;
 import edu.wol.server.connector.ws.messages.UserPayload;
 
@@ -35,9 +44,11 @@ encoders = { ShapeEncoder.class, ProspectiveEncoder.class },
 decoders = { GenericMessageDecoder.class},
 configurator = SpringConfigurator.class
 ) 
-public class WebSocketEndpoint {
+public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 	final static Logger logger = LoggerFactory.getLogger(WebSocketEndpoint.class);
 	private static final Map< Session, User > sessions = new ConcurrentHashMap< Session,User >(); 
+	private User curUser=null;
+	private Session curSession=null;
 	@Autowired
 	private UserInterface ui;
 	@OnOpen
@@ -49,9 +60,6 @@ public class WebSocketEndpoint {
 			logger.debug("New StartSessionHandler associate to Session " + session.getId());
 		}
 	}
-
-
-
 
 	@OnClose
 	public void onClose( final Session session ) {
@@ -71,10 +79,25 @@ public class WebSocketEndpoint {
 					User user=ui.loadUser(ssm.getUsername());
 					if(user!=null){
 						sessions.put(session, user);
+						curUser=user;
+						curSession=session;
 						logger.info("User "+ssm.getUsername()+" logged " + session.getId());
 						session.getAsyncRemote().sendObject(user.getProspective());
-						//TODO send all wolEntity
-						//TODO add listener for push change
+						
+						WorldContainer<WolEntity,Position> wol=user.getProspective().getWol();
+						if(wol!=null){//TODO send all wolEntity
+							EntitiesPayload<Planetoid,Position> ep= new EntitiesPayload<Planetoid,Position>();
+							Collection<WolEntity> ce=wol.getSpace().getAllEntities();
+							for(WolEntity e : ce){
+								if(e instanceof Planetoid){
+									Position p=wol.getSpace().getPosition(e);
+									ep.addEntity((Planetoid)e, p);
+								}
+							}
+							session.getAsyncRemote().sendObject(ep);
+							wol.addEventObserver(this);//TODO add listener for push change
+						}
+						
 					}
 					
 				}else if (msgPayload instanceof Command){
@@ -108,4 +131,18 @@ public class WebSocketEndpoint {
 			logger.error("Remote io Error",e);
 		}
     }
+
+
+
+
+	@Override
+	public void processEvent(iEvent event) {
+		if(event instanceof NewPosition){
+			EntitiesPayload<Planetoid,Position> ep = new EntitiesPayload<Planetoid,Position>();
+			NewPosition<Planetoid> np=(NewPosition<Planetoid>)event;
+			ep.addEntity(np.getEntity(), np.getNewPosition());
+			curSession.getAsyncRemote().sendObject(ep);
+		}
+		
+	}
 }
