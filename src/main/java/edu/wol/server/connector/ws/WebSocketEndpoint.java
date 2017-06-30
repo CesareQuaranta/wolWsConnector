@@ -74,37 +74,44 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 		if(ui!=null){
 			Object msgPayload =msg.getPayload();
 			if(msgPayload!=null){
-				if(msgPayload instanceof UserPayload){//TODO Da verificare e spostare in SessionStartMessageHandler
-					UserPayload ssm = (UserPayload)msgPayload;
-					User user=ui.loadUser(ssm.getUsername());
-					if(user!=null){
-						sessions.put(session, user);
-						curUser=user;
-						curSession=session;
-						logger.info("User "+ssm.getUsername()+" logged " + session.getId());
-						session.getAsyncRemote().sendObject(user.getProspective());
-						
-						WorldContainer<WolEntity,Position> wol=(WorldContainer<WolEntity,Position>)user.getProspective().getWol();
-						if(wol!=null){//TODO send all wolEntity
-							EntitiesPayload<Planetoid,Position> ep= new EntitiesPayload<Planetoid,Position>();
-							Collection<WolEntity> ce=(Collection<WolEntity>) wol.getSpace().getAllEntities();
-							for(WolEntity e : ce){
-								if(e instanceof Planetoid){
-									Position p=wol.getSpace().getPosition(e);
-									ep.addEntity((Planetoid)e, p);
+				try{
+					if(msgPayload instanceof UserPayload){//TODO Da verificare e spostare in SessionStartMessageHandler
+						UserPayload ssm = (UserPayload)msgPayload;
+						logger.debug("Processing UserPayload "+ssm.getToken());
+						User user=ui.loadUser(ssm.getUsername());
+						if(user!=null){
+							sessions.put(session, user);
+							curUser=user;
+							curSession=session;
+							logger.info("User "+ssm.getUsername()+" logged " + session.getId());
+							session.getAsyncRemote().sendObject(user.getProspective());
+							
+							WorldContainer<WolEntity,Position> wol=(WorldContainer<WolEntity,Position>)user.getProspective().getWol();
+							if(wol!=null){//TODO send all wolEntity
+								EntitiesPayload<Planetoid,Position> ep= new EntitiesPayload<Planetoid,Position>();
+								Collection<WolEntity> ce=(Collection<WolEntity>) wol.getSpace().getAllEntities();
+								for(WolEntity e : ce){
+									if(e instanceof Planetoid){
+										Position p=wol.getSpace().getPosition(e);
+										ep.addEntity((Planetoid)e, p);
+									}
 								}
+								session.getAsyncRemote().sendObject(ep);
+								wol.addEventObserver(this);//TODO add listener for push change
 							}
-							session.getAsyncRemote().sendObject(ep);
-							wol.addEventObserver(this);//TODO add listener for push change
+							
+						}else{
+							logger.warn("No user found:"+ssm.getUsername());
 						}
 						
+					}else if (msgPayload instanceof Command){
+						Command cmd=(Command)msgPayload;
+						User user=sessions.get(session);
+						logger.info("User "+user.getUsername()+" " + session.getId()+" command:"+cmd);
+						ui.executeUserCommand(user, cmd);
 					}
-					
-				}else if (msgPayload instanceof Command){
-					Command cmd=(Command)msgPayload;
-					User user=sessions.get(session);
-					logger.info("User "+user.getUsername()+" " + session.getId()+" command:"+cmd);
-					ui.executeUserCommand(user, cmd);
+				}catch(Exception e){
+					logger.error("Error processing message "+msg.getSource(),e);
 				}
 			}
 			
