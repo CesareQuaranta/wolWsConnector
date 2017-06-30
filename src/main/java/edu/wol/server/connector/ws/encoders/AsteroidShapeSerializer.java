@@ -21,9 +21,6 @@ public class AsteroidShapeSerializer implements JsonSerializer<AsteroidShape> {
 			JsonSerializationContext context) {
 		JsonObject jsonShape=new JsonObject();
 		jsonShape.add("type", new JsonPrimitive("custom"));
-		if(src.getMateriaID()!=null){
-			jsonShape.add("material", new JsonPrimitive(src.getMateriaID()));
-		}
 		JsonArray jsonVertices=new JsonArray();
 		jsonShape.add("vertices",jsonVertices);
 		List<Vector> vertices=src.getVertices();

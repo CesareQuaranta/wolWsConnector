@@ -1,5 +1,8 @@
 package edu.wol.server.connector.ws;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.junit.Test;
 import org.springframework.util.Assert;
 
@@ -33,10 +36,10 @@ public class TestSerializers {
 	@Test
 	public void testEntitiesPayloadPlanetoidSerializer() throws Exception{
 			EntitiesPayload<Planetoid,Position> ep = new EntitiesPayload<Planetoid,Position>();
-			Asteroid a = new Asteroid(1,1);
+			Asteroid a = new Asteroid(Collections.singletonList("h2"),1,1);
 			a.setShape(AsteroidShapeFactory.getInstance().generateShape());
 			ep.addEntity(a, new Position());
-			Asteroid a2 = new Asteroid(3,3);
+			Asteroid a2 = new Asteroid(Collections.singletonList("h2"),3,3);
 			a2.setShape(AsteroidShapeFactory.getInstance().generateShape());
 			ep.addEntity(a2, new Position(10,10,10));
 			Gson gson=GsonFactory.getInstance();
