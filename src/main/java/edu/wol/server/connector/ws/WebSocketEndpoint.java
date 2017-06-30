@@ -84,10 +84,10 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 						logger.info("User "+ssm.getUsername()+" logged " + session.getId());
 						session.getAsyncRemote().sendObject(user.getProspective());
 						
-						WorldContainer<WolEntity,Position> wol=user.getProspective().getWol();
+						WorldContainer<WolEntity,Position> wol=(WorldContainer<WolEntity,Position>)user.getProspective().getWol();
 						if(wol!=null){//TODO send all wolEntity
 							EntitiesPayload<Planetoid,Position> ep= new EntitiesPayload<Planetoid,Position>();
-							Collection<WolEntity> ce=wol.getSpace().getAllEntities();
+							Collection<WolEntity> ce=(Collection<WolEntity>) wol.getSpace().getAllEntities();
 							for(WolEntity e : ce){
 								if(e instanceof Planetoid){
 									Position p=wol.getSpace().getPosition(e);
