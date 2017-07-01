@@ -29,17 +29,16 @@ import edu.wol.dom.commands.Command;
 import edu.wol.dom.services.UserInterface;
 import edu.wol.dom.space.NewPosition;
 import edu.wol.dom.space.Planetoid;
-import edu.wol.dom.space.Position;
 import edu.wol.server.connector.ws.decoders.GenericMessageDecoder;
+import edu.wol.server.connector.ws.encoders.PhenomensEncoder;
 import edu.wol.server.connector.ws.encoders.ProspectiveEncoder;
-import edu.wol.server.connector.ws.encoders.ShapeEncoder;
 import edu.wol.server.connector.ws.messages.GenericMessage;
 import edu.wol.server.connector.ws.messages.UserPayload;
 
 @ServerEndpoint( 
 value = "/ws", 
 subprotocols  = {"wol/1.0"},
-encoders = { ShapeEncoder.class, ProspectiveEncoder.class }, 
+encoders = { ProspectiveEncoder.class ,PhenomensEncoder.class}, 
 decoders = { GenericMessageDecoder.class},
 configurator = SpringConfigurator.class
 ) 
