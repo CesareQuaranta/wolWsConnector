@@ -22,15 +22,17 @@ public class GsonFactory {
 			GsonBuilder builder= new GsonBuilder();
 			builder.enableComplexMapKeySerialization();
 			builder.setPrettyPrinting();//TODO Disable 4 production
+			//Serializer
 			builder.registerTypeAdapter(Vector.class, new VectorSerializer());
 			builder.registerTypeAdapter(Position.class, new PositionSerializer());
 			builder.registerTypeAdapter(Prospective.class, new ProspectiveSerializer());
-			builder.registerTypeAdapter(Position.class, new PositionDeserializer());
-			builder.registerTypeAdapter(Command.class, new CommandDeserializer());
 			builder.registerTypeAdapter(AsteroidShape.class, new AsteroidShapeSerializer());
 			builder.registerTypeAdapter(PlanetShape.class, new PlanetShapeSerializer());
 			builder.registerTypeAdapter(Asteroid.class, new PlanetoidSerializer<Asteroid>());
 			builder.registerTypeAdapter(Phenomen.class, new PhenomenSerializer<Phenomen<Planetoid>>());
+			//Deserializers
+			builder.registerTypeAdapter(Position.class, new PositionDeserializer());
+			builder.registerTypeAdapter(Command.class, new CommandDeserializer());
 			
 			instance =builder.create();
 		}
