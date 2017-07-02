@@ -22,7 +22,7 @@ public class PositionDeserializer implements JsonDeserializer<Position>{
 		JsonElement jsonY = jsonObject.get("y");
 		JsonElement jsonZ = jsonObject.get("z");
 	   
-		return new Position(jsonX.getAsLong(),jsonY.getAsLong(),jsonZ.getAsLong());
+		return new Position(Math.round(jsonX.getAsFloat()),Math.round(jsonY.getAsFloat()),Math.round(jsonZ.getAsFloat()));
 	}
 
 }
