@@ -16,9 +16,9 @@ public class PositionSerializer implements JsonSerializer<Position> {
 	public JsonElement serialize(Position src, Type typeOfSrc,
 			JsonSerializationContext context) {
 		JsonObject jsonPos=new JsonObject();
-		jsonPos.add("x", new JsonPrimitive(src.getX()));
-		jsonPos.add("y", new JsonPrimitive(src.getY()));
-		jsonPos.add("z", new JsonPrimitive(src.getX()));
+		jsonPos.add("x", new JsonPrimitive(new Long(src.getX())));
+		jsonPos.add("y", new JsonPrimitive(new Long(src.getY())));
+		jsonPos.add("z", new JsonPrimitive(new Long(src.getZ())));
 		return jsonPos;
 	}
 

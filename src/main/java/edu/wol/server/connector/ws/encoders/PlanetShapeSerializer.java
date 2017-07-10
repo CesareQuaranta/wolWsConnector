@@ -16,7 +16,7 @@ public class PlanetShapeSerializer implements JsonSerializer<PlanetShape> {
 	public JsonElement serialize(PlanetShape src, Type typeOfSrc,
 			JsonSerializationContext context) {
 		JsonObject jsonShape=new JsonObject();
-		jsonShape.add("radius", new JsonPrimitive(src.getRadius()));
+		jsonShape.add("radius", new JsonPrimitive(new Double(src.getRadius())));
 		return jsonShape;
 	}
 

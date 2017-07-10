@@ -17,9 +17,9 @@ public class ProspectiveSerializer implements JsonSerializer<Prospective> {
 	public JsonElement serialize(Prospective src, Type typeOfSrc,
 			JsonSerializationContext context) {
 		JsonObject jsonPrs=new JsonObject();
-		jsonPrs.add("fov", new JsonPrimitive(src.getFov()));
-		jsonPrs.add("near", new JsonPrimitive(src.getNear()));
-		jsonPrs.add("far", new JsonPrimitive(src.getFar()));
+		jsonPrs.add("fov", new JsonPrimitive(new Integer(src.getFov())));
+		jsonPrs.add("near", new JsonPrimitive(new Float(src.getNear())));
+		jsonPrs.add("far", new JsonPrimitive(new Float(src.getFar())));
 		JsonElement jsonPos = context.serialize(src.getPosition());
 		jsonPrs.add("position", jsonPos);
 		JsonElement jsonFoc = context.serialize(src.getFocus());

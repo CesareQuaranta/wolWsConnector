@@ -17,9 +17,9 @@ public class VectorSerializer implements JsonSerializer<Vector> {
 	public JsonElement serialize(Vector src, Type typeOfSrc,
 			JsonSerializationContext context) {
 		JsonObject jsonPos=new JsonObject();
-		jsonPos.add("x", new JsonPrimitive(src.getX()));
-		jsonPos.add("y", new JsonPrimitive(src.getY()));
-		jsonPos.add("z", new JsonPrimitive(src.getZ()));
+		jsonPos.add("x", new JsonPrimitive(new Float(src.getX())));
+		jsonPos.add("y", new JsonPrimitive(new Float(src.getY())));
+		jsonPos.add("z", new JsonPrimitive(new Float(src.getZ())));
 		return jsonPos;
 	}
 

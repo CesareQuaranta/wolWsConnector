@@ -32,9 +32,9 @@ public class AsteroidShapeSerializer implements JsonSerializer<AsteroidShape> {
 		List<Triangle> faces=src.getFaces();
 		for(Triangle face:faces){
 			JsonObject jsonFace=new JsonObject();
-			jsonFace.add("v1", new JsonPrimitive(vertices.indexOf(face.getV1())));
-			jsonFace.add("v2", new JsonPrimitive(vertices.indexOf(face.getV2())));
-			jsonFace.add("v3", new JsonPrimitive(vertices.indexOf(face.getV3())));
+			jsonFace.add("v1", new JsonPrimitive(new Integer(vertices.indexOf(face.getV1()))));
+			jsonFace.add("v2", new JsonPrimitive(new Integer(vertices.indexOf(face.getV2()))));
+			jsonFace.add("v3", new JsonPrimitive(new Integer(vertices.indexOf(face.getV3()))));
 			jsonFaces.add(jsonFace);
 		}
 		return jsonShape;
