@@ -11,7 +11,7 @@ import edu.wol.dom.shape.PlanetShape;
 import edu.wol.dom.space.Asteroid;
 import edu.wol.dom.space.Planetoid;
 import edu.wol.dom.space.Position;
-import edu.wol.dom.space.Vector;
+import edu.wol.dom.space.Vector3f;
 import edu.wol.server.connector.ws.decoders.CommandDeserializer;
 import edu.wol.server.connector.ws.decoders.PositionDeserializer;
 
@@ -23,7 +23,7 @@ public class GsonFactory {
 			builder.enableComplexMapKeySerialization();
 			builder.setPrettyPrinting();//TODO Disable 4 production
 			//Serializer
-			builder.registerTypeAdapter(Vector.class, new VectorSerializer());
+			builder.registerTypeAdapter(Vector3f.class, new VectorSerializer());
 			builder.registerTypeAdapter(Position.class, new PositionSerializer());
 			builder.registerTypeAdapter(Prospective.class, new ProspectiveSerializer());
 			builder.registerTypeAdapter(AsteroidShape.class, new AsteroidShapeSerializer());

@@ -12,7 +12,7 @@ import com.google.gson.JsonSerializer;
 
 import edu.wol.dom.shape.AsteroidShape;
 import edu.wol.dom.shape.Triangle;
-import edu.wol.dom.space.Vector;
+import edu.wol.dom.space.Vector3f;
 
 public class AsteroidShapeSerializer implements JsonSerializer<AsteroidShape> {
 
@@ -23,8 +23,8 @@ public class AsteroidShapeSerializer implements JsonSerializer<AsteroidShape> {
 		jsonShape.add("type", new JsonPrimitive("custom"));
 		JsonArray jsonVertices=new JsonArray();
 		jsonShape.add("vertices",jsonVertices);
-		List<Vector> vertices=src.getVertices();
-		for(Vector vertice:vertices){
+		List<Vector3f> vertices=src.getVertices();
+		for(Vector3f vertice:vertices){
 			jsonVertices.add(context.serialize(vertice));
 		}
 		JsonArray jsonFaces=new JsonArray();

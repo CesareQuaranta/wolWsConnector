@@ -9,12 +9,12 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import edu.wol.dom.space.Position;
-import edu.wol.dom.space.Vector;
+import edu.wol.dom.space.Vector3f;
 
-public class VectorSerializer implements JsonSerializer<Vector> {
+public class VectorSerializer implements JsonSerializer<Vector3f> {
 
 	@Override
-	public JsonElement serialize(Vector src, Type typeOfSrc,
+	public JsonElement serialize(Vector3f src, Type typeOfSrc,
 			JsonSerializationContext context) {
 		JsonObject jsonPos=new JsonObject();
 		jsonPos.add("x", new JsonPrimitive(new Float(src.getX())));
