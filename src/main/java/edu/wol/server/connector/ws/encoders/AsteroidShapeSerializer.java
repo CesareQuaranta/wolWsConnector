@@ -3,6 +3,9 @@ package edu.wol.server.connector.ws.encoders;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,10 +18,10 @@ import edu.wol.dom.shape.Triangle;
 import edu.wol.dom.space.Vector3f;
 
 public class AsteroidShapeSerializer implements JsonSerializer<AsteroidShape> {
-
+	final static Logger logger = LoggerFactory.getLogger(AsteroidShapeSerializer.class);
+	
 	@Override
-	public JsonElement serialize(AsteroidShape src, Type typeOfSrc,
-			JsonSerializationContext context) {
+	public JsonElement serialize(AsteroidShape src, Type typeOfSrc,JsonSerializationContext context) {
 		JsonObject jsonShape=new JsonObject();
 		jsonShape.add("type", new JsonPrimitive("custom"));
 		JsonArray jsonVertices=new JsonArray();
