@@ -120,7 +120,7 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 	@OnError
     public void onWebSocketError(Session session,Throwable cause)
     {
-		logger.error("ws connection exception: " + session.getId(),cause);
+		
 		try {
 		if(cause instanceof DecodeException){
 			
@@ -129,6 +129,15 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 			}else if(((DecodeException)cause).getMessage().contains("Errore di decodifica Token")){
 					session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY,((DecodeException)cause).getMessage()));
 			}
+		}else if(cause instanceof IOException){
+			IOException io=(IOException)cause;
+			if(io.getMessage().compareToIgnoreCase("Connection reset by peer")==0){
+				logger.info("Session" + session.getId()+" terminate by Peer");
+			}else{
+				logger.error("ws IOException: " + session.getId(),cause);
+			}
+		}else{
+			logger.error("ws generic connection exception: " + session.getId(),cause);
 		}
 		} catch (IOException e) {
 			logger.error("Remote io Error",e);
