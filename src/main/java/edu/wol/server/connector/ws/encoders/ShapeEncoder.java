@@ -6,6 +6,7 @@ import javax.websocket.EndpointConfig;
 
 import com.google.gson.Gson;
 
+import edu.wol.dom.shape.AsteroidShape;
 import edu.wol.dom.shape.PlanetShape;
 import edu.wol.dom.shape.Shape;
 
@@ -24,7 +25,7 @@ public class ShapeEncoder implements Encoder.Text< Shape >{
 
 	@Override
 	public String encode(Shape shape) throws EncodeException {
-		if(shape instanceof PlanetShape){
+		if(shape instanceof PlanetShape || shape instanceof AsteroidShape){
 			return gson.toJson(shape);
 		}else{
 			return "{unsupported:true}";
