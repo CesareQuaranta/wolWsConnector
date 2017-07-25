@@ -10,15 +10,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 
-import edu.wol.dom.shape.AsteroidShape;
+import edu.wol.dom.shape.PlaneShape;
 
-public class AsteroidShapeSerializer extends AbstractShapeSerializer<AsteroidShape> {
-	final static Logger logger = LoggerFactory.getLogger(AsteroidShapeSerializer.class);
+public class PlaneShapeSerializer extends AbstractShapeSerializer<PlaneShape> {
+	final static Logger logger = LoggerFactory.getLogger(PlaneShapeSerializer.class);
 	
 	@Override
-	public JsonElement serialize(AsteroidShape src, Type typeOfSrc,JsonSerializationContext context) {
+	public JsonElement serialize(PlaneShape src, Type typeOfSrc,JsonSerializationContext context) {
 		JsonObject jsonShape=new JsonObject();
-		jsonShape.add("type", new JsonPrimitive("custom"));
+		jsonShape.add("type", new JsonPrimitive("plane"));
 		serializeVertices(jsonShape,context,src.getVertices(),src.getFaces());
 		return jsonShape;
 	}

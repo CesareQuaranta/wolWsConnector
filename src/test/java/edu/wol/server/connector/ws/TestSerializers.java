@@ -36,7 +36,7 @@ public class TestSerializers {
 	public void testPhenomenSerializer() throws Exception{
 			Phenomen<Planetoid> ph = new Phenomen<Planetoid>();
 			Asteroid a = new Asteroid(Collections.singletonList("h2"),1,1);
-			a.setShape(AsteroidShapeFactory.getInstance().generateShape());
+			a.setShape(AsteroidShapeFactory.getInstance().generateHidrogenGemShape());
 			ph.setEntity(a);
 			ph.setPosition(new Position());
 			/*Asteroid a2 = new Asteroid(Collections.singletonList("h2"),3,3);

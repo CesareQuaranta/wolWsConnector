@@ -21,6 +21,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import edu.wol.dom.services.TestInterface;
+import edu.wol.dom.shape.AsteroidShape;
+import edu.wol.dom.shape.PlaneShape;
+import edu.wol.dom.shape.PlanetShapeFactory;
 import edu.wol.server.connector.ws.encoders.GsonFactory;
 import edu.wol.server.connector.ws.encoders.ShapeEncoder;
 
@@ -43,7 +46,7 @@ public class WebSocketTestsEndpoint {
 	@OnClose
 	public void onClose( final Session session ) {
 		if(session!=null){
-			logger.info("tet connection closed: " + session.getId());
+			logger.info("test connection closed: " + session.getId());
 		}
 	}
 	
@@ -51,37 +54,63 @@ public class WebSocketTestsEndpoint {
 	public void onMessage( String msg, final Session session ) throws IOException, EncodeException {
 		logger.debug("Processing msg "+msg);
 		try {
-			Type type = new TypeToken<Map<String, String>>(){}.getType();
-			Gson gson=GsonFactory.getInstance();
-			Map<String, String> params=gson.fromJson(msg, type);
-			String l1=params.get("l1");
-			String l2=params.get("l2");
-			String l3=params.get("l3");
-			String l4=params.get("l4");
-			String aX=params.get("aX");
-			String a3X=params.get("a3X");
-			String a1Y=params.get("a1Y");
-			String a2Y=params.get("a2Y");
-			String a3Y=params.get("a3Y");
-			String aZ=params.get("aZ");
-			String cXZ=params.get("cXZ");
-			String cY=params.get("cY");
-			float length1=Float.parseFloat(l1);
-			float length2=Float.parseFloat(l2);
-			float length3=Float.parseFloat(l3);
-			float length4=Float.parseFloat(l4);
-			double angoloX=Double.parseDouble(aX);
-			double angolo3X=Double.parseDouble(a3X);
-			double angolo1Y=Double.parseDouble(a1Y);
-			double angolo2Y=Double.parseDouble(a2Y);
-			double angolo3Y=Double.parseDouble(a3Y);
-			double angoloZ=Double.parseDouble(aZ);
-			float correctXZ=Float.parseFloat(cXZ);
-			float correctY=Float.parseFloat(cY);
-			session.getAsyncRemote().sendObject(ui.generateHidrogenGemShape(length1,length2,length3,length4,angoloX,angolo3X,angolo1Y,angolo2Y,angolo3Y,angoloZ,correctXZ,correctY));
+			if(msg.startsWith("hg:")){
+				session.getAsyncRemote().sendObject(processHidrogenGemRequest(msg));
+			}else if(msg.startsWith("isl:")){
+				session.getAsyncRemote().sendObject(processIslandRequest(msg));
+			}else{
+				logger.warn("Unsupported message:"+msg);
+			}
+			
 		} catch (Exception e) {
 			logger.error("Error testing generation asteroid shape " + session.getId(),e);
 		}
+	}
+	private AsteroidShape processHidrogenGemRequest(String msg) throws IOException, Exception{
+		Type type = new TypeToken<Map<String, String>>(){}.getType();
+		Gson gson=GsonFactory.getInstance();
+		Map<String, String> params=gson.fromJson(msg, type);
+		String l1=params.get("l1");
+		String l2=params.get("l2");
+		String l3=params.get("l3");
+		String l4=params.get("l4");
+		String aX=params.get("aX");
+		String a3X=params.get("a3X");
+		String a1Y=params.get("a1Y");
+		String a2Y=params.get("a2Y");
+		String a3Y=params.get("a3Y");
+		String aZ=params.get("aZ");
+		String cXZ=params.get("cXZ");
+		String cY=params.get("cY");
+		float length1=Float.parseFloat(l1);
+		float length2=Float.parseFloat(l2);
+		float length3=Float.parseFloat(l3);
+		float length4=Float.parseFloat(l4);
+		double angoloX=Double.parseDouble(aX);
+		double angolo3X=Double.parseDouble(a3X);
+		double angolo1Y=Double.parseDouble(a1Y);
+		double angolo2Y=Double.parseDouble(a2Y);
+		double angolo3Y=Double.parseDouble(a3Y);
+		double angoloZ=Double.parseDouble(aZ);
+		float correctXZ=Float.parseFloat(cXZ);
+		float correctY=Float.parseFloat(cY);
+		return ui.generateHidrogenGemShape(length1,length2,length3,length4,angoloX,angolo3X,angolo1Y,angolo2Y,angolo3Y,angoloZ,correctXZ,correctY);
+	}
+	
+	private PlaneShape processIslandRequest(String msg){
+		int lod=0;
+		double roughness=0;
+		double maxHeigth=0;
+		Type type = new TypeToken<Map<String, String>>(){}.getType();
+		Gson gson=GsonFactory.getInstance();
+		Map<String, String> params=gson.fromJson(msg, type);
+		String pLod=params.get("lod");
+		String pRoughness=params.get("rgh");
+		String pHeigth=params.get("h");
+		lod=Integer.parseInt(pLod);
+		roughness=Double.parseDouble(pRoughness);
+		maxHeigth=Double.parseDouble(pHeigth);
+		return ui.generateIsland(lod, roughness, maxHeigth);
 	}
 	
 	@OnError
@@ -95,5 +124,9 @@ public class WebSocketTestsEndpoint {
 			logger.error("Remote io Error",e);
 		}
     }
+	
+	private void generateHidrogenGem(){
+		
+	}
 
 }
