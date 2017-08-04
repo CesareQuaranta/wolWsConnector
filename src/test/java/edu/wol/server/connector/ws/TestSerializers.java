@@ -13,6 +13,8 @@ import edu.wol.dom.shape.AsteroidShapeFactory;
 import edu.wol.dom.space.Asteroid;
 import edu.wol.dom.space.Planetoid;
 import edu.wol.dom.space.Position;
+import edu.wol.dom.space.Rotation;
+import edu.wol.dom.space.Vector3f;
 import edu.wol.server.connector.ws.encoders.GsonFactory;
 
 public class TestSerializers {	
@@ -39,6 +41,7 @@ public class TestSerializers {
 			a.setShape(AsteroidShapeFactory.getInstance().generateHidrogenGemShape());
 			ph.setEntity(a);
 			ph.setPosition(new Position());
+			ph.addEffect(new Rotation<Planetoid>(a,new Vector3f(1,0,0),Math.PI/2));
 			/*Asteroid a2 = new Asteroid(Collections.singletonList("h2"),3,3);
 			a2.setShape(AsteroidShapeFactory.getInstance().generateShape());
 			ep.addEntity(a2, new Position(10,10,10));*/

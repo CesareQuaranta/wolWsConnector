@@ -27,7 +27,7 @@ public class PhenomenSerializer<E extends Phenomen<Planetoid>> implements JsonSe
 			if(e instanceof Movement){
 				jsonPhenomen.add("velocity", context.serialize(((Movement<Planetoid>)e).getVector()));
 			}else if(e instanceof Rotation){
-				jsonPhenomen.add("rotation", context.serialize(((Rotation<Planetoid>)e).getVector()));
+				jsonPhenomen.add("rotation", context.serialize(((Rotation<Planetoid>)e)));
 			}else{
 				logger.warn("Unsupported Effect "+e.getClass().getCanonicalName());
 			}
