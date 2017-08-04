@@ -54,10 +54,10 @@ public class WebSocketTestsEndpoint {
 	public void onMessage( String msg, final Session session ) throws IOException, EncodeException {
 		logger.debug("Processing msg "+msg);
 		try {
-			if(msg.startsWith("hg:")){
-				session.getAsyncRemote().sendObject(processHidrogenGemRequest(msg));
-			}else if(msg.startsWith("isl:")){
-				session.getAsyncRemote().sendObject(processIslandRequest(msg));
+			if(msg.startsWith("{\"hg\":")){
+				session.getAsyncRemote().sendObject(processHidrogenGemRequest(msg.substring(6, msg.length()-1)));
+			}else if(msg.startsWith("{\"isl\":")){
+				session.getAsyncRemote().sendObject(processIslandRequest(msg.substring(7, msg.length()-1)));
 			}else{
 				logger.warn("Unsupported message:"+msg);
 			}
