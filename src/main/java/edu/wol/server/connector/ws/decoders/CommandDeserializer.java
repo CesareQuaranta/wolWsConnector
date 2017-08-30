@@ -10,6 +10,7 @@ import com.google.gson.JsonParseException;
 
 import edu.wol.dom.commands.Command;
 import edu.wol.dom.commands.GravityPower;
+import edu.wol.dom.commands.Movement;
 import edu.wol.dom.space.Position;
 
 public class CommandDeserializer implements JsonDeserializer<Command>{
@@ -35,6 +36,17 @@ public class CommandDeserializer implements JsonDeserializer<Command>{
 	    	if(jsonMag!=null){
 	    		((GravityPower) c).setMagnitudo(jsonMag.getAsLong());
 	    	}
+	    	break;
+	    case "Position":
+	    	c = new Movement();
+	    	JsonElement jsonMov=jsonObject.get("pos");
+	    	if(jsonMov!=null){
+	    		Position position=context.deserialize(jsonMov,Position.class);
+	    		if(position!=null){
+	    			((Movement) c).setPosition(position);
+	    		}
+	    	}
+	    	break;
 	    }
 		return c;
 	}
