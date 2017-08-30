@@ -9,7 +9,9 @@ import edu.wol.dom.commands.Command;
 import edu.wol.dom.shape.AsteroidShape;
 import edu.wol.dom.shape.PlaneShape;
 import edu.wol.dom.shape.PlanetShape;
+import edu.wol.dom.shape.SphericalShape;
 import edu.wol.dom.space.Asteroid;
+import edu.wol.dom.space.LiquidSphere;
 import edu.wol.dom.space.Planetoid;
 import edu.wol.dom.space.Position;
 import edu.wol.dom.space.Rotation;
@@ -31,8 +33,10 @@ public class GsonFactory {
 			builder.registerTypeAdapter(Rotation.class, new RotationSerializer());
 			builder.registerTypeAdapter(AsteroidShape.class, new AsteroidShapeSerializer());
 			builder.registerTypeAdapter(PlanetShape.class, new PlanetShapeSerializer());
+			builder.registerTypeAdapter(SphericalShape.class, new SphereShapeSerializer());
 			builder.registerTypeAdapter(PlaneShape.class, new PlaneShapeSerializer());
 			builder.registerTypeAdapter(Asteroid.class, new PlanetoidSerializer<Asteroid>());
+			builder.registerTypeAdapter(LiquidSphere.class, new PlanetoidSerializer<LiquidSphere>());
 			builder.registerTypeAdapter(Phenomen.class, new PhenomenSerializer<Phenomen<Planetoid>>());
 			//Deserializers
 			builder.registerTypeAdapter(Position.class, new PositionDeserializer());

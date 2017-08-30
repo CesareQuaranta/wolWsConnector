@@ -10,6 +10,7 @@ import edu.wol.dom.shape.AsteroidShape;
 import edu.wol.dom.shape.PlaneShape;
 import edu.wol.dom.shape.PlanetShape;
 import edu.wol.dom.shape.Shape;
+import edu.wol.dom.shape.SphericalShape;
 
 public class ShapeEncoder implements Encoder.Text< Shape >{
 	private Gson gson;
@@ -26,7 +27,7 @@ public class ShapeEncoder implements Encoder.Text< Shape >{
 
 	@Override
 	public String encode(Shape shape) throws EncodeException {
-		if(shape instanceof PlanetShape || shape instanceof AsteroidShape || shape instanceof PlaneShape){
+		if(shape instanceof SphericalShape || shape instanceof PlanetShape || shape instanceof AsteroidShape || shape instanceof PlaneShape){
 			return gson.toJson(shape);
 		}else{
 			return "{unsupported:true}";
