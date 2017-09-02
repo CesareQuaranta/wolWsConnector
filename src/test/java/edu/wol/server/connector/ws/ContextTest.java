@@ -98,7 +98,7 @@ public class ContextTest {//implements WebSocketConfigurer{
 			}
 
 			@Override
-			public Collection getAllPhenomen(long wolID) throws IOException,
+			public Collection getAllPhenomen(String wolID) throws IOException,
 					Exception {
 				// TODO Auto-generated method stub
 				return null;

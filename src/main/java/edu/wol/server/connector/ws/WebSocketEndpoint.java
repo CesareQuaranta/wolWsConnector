@@ -84,8 +84,7 @@ public class WebSocketEndpoint implements iEventObserver<WolEntity> {
 							logger.info("User "+ssm.getUsername()+" logged " + session.getId());
 							session.getAsyncRemote().sendObject(user.getProspective());
 							if(user.getProspective().getWolID()!=null){
-								long wolID=Long.parseLong(user.getProspective().getWolID().split("-")[1]);
-								Collection<Phenomen<Planetoid>> phenomens=ui.getAllPhenomen(wolID);
+								Collection<Phenomen<Planetoid>> phenomens=ui.getAllPhenomen(user.getProspective().getWolID());
 								if(phenomens==null || phenomens.isEmpty()){
 									logger.debug("No phenomens found for "+user.getProspective().getWolID()+" empty Wol?");
 								}else{
